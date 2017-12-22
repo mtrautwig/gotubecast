@@ -13,10 +13,10 @@ function omxdbus {
     OMXPLAYER_DBUS_PID="/tmp/omxplayerdbus.${USER:-root}.pid"
     export DBUS_SESSION_BUS_ADDRESS=`cat $OMXPLAYER_DBUS_ADDR`
     export DBUS_SESSION_BUS_PID=`cat $OMXPLAYER_DBUS_PID`
-    dbus-send --print-reply=literal --session --reply-timeout=100 --dest=org.mpris.MediaPlayer2.omxplayer /org/mpris/MediaPlayer2 $* >/dev/null
+    dbus-send --print-reply=literal --session --reply-timeout=100 --dest=org.mpris.MediaPlayer2.omxplayer /org/mpris/MediaPlayer2 $* </dev/null >/dev/null
 }
 
-gotubecast -s "$SCREEN_ID" -n "$SCREEN_NAME" -i "$SCREEN_APP" | while read line
+gotubecast -s "$SCREEN_ID" -n "$SCREEN_NAME" -i "$SCREEN_APP" </dev/null | while read line
 do
     cmd="`cut -d ' ' -f1 <<< "$line"`"
     arg="`cut -d ' ' -f2 <<< "$line"`"
@@ -30,7 +30,7 @@ do
         video_id)
             YTURL="`youtube-dl -g $YTDL_OPTS https://youtube.com?v=$arg`"
             killall omxplayer.bin
-            omxplayer $OMX_OPTS "$YTURL" &
+            omxplayer $OMX_OPTS "$YTURL" </dev/null &
             ;;
         play | pause)
             omxdbus org.mpris.MediaPlayer2.Player.PlayPause
